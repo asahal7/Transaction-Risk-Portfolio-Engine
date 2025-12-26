@@ -12,6 +12,16 @@ public class Portfolio {
         totalValue = 0;
     }
 
+    public boolean hasAsset(String name){
+        return assets.containsKey(name);
+    }
+    public double getAssetValue(String name){
+        Asset asset = assets.get(name);
+        if (asset != null){
+            return asset.getValue();
+        }
+        return 0;
+    }
     public void addAsset(Asset asset) {
         assets.put(asset.getName(), asset);
     }

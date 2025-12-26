@@ -28,6 +28,19 @@ public class Asset {
     public double getRisk() {
         return risk;
     }
+    @Override // overrides natual equal method so in the contains method which we use in portfolio it checks by name
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Asset asset = (Asset) o;
+        return name.equals(asset.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
 
     public void setValue(double value) {
         if (value < 0){
