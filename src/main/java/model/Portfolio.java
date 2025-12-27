@@ -35,15 +35,14 @@ public class Portfolio {
     }
 
     public void applyTransaction(Transaction tx) {
-        Asset asset = tx.getAsset();
+        Asset asset = assets.get(tx.getAssetName());
+        if (asset == null) {
+            throw new IllegalArgumentException("Asset does not exist");
+        }
 
         if (tx.getType() == Transaction.Type.BUY) {
             asset.setValue(asset.getValue() + tx.getAmount());
             totalValue += tx.getAmount();
-
-            if (!assets.containsKey(asset.getName())) {
-                assets.put(asset.getName(), asset);
-            }
 
         } else if (tx.getType() == Transaction.Type.SELL) {
             double oldValue = asset.getValue();
@@ -54,9 +53,6 @@ public class Portfolio {
             double removed = oldValue - newValue;
             totalValue -= removed;
 
-            if (asset.getValue() == 0) {
-                assets.remove(asset.getName());
-            }
         }
     }
 
