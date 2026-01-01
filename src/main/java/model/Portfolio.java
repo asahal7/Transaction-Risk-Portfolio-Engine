@@ -1,16 +1,24 @@
 package model;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
 
 public class Portfolio {
     private Map<String, Asset> assets;
     double totalValue;
+    private final Set<Integer> appliedTransactionIds;
 
-    public Portfolio() {
-        assets = new HashMap<String, Asset>();
-        totalValue = 0;
+
+   public Portfolio(Map<String, Asset> assets) {
+        this.assets = assets;
+        this.appliedTransactionIds = new HashSet<>();
+        this.totalValue = 0;
     }
+
+
 
     public boolean hasAsset(String name){
         return assets.containsKey(name);
@@ -34,7 +42,15 @@ public class Portfolio {
         return totalValue;
     }
 
-    public void applyTransaction(Transaction tx) {
+   public void applyTransaction(Transaction tx) {
+        Objects.requireNonNull(tx, "Transaction cannot be null");
+
+        if (appliedTransactionIds.contains(tx.getId())) {
+            throw new IllegalStateException(
+                "Transaction already applied: " + tx.getId()
+            );
+        }
+
         Asset asset = assets.get(tx.getAssetName());
         if (asset == null) {
             throw new IllegalArgumentException("Asset does not exist");
@@ -52,9 +68,11 @@ public class Portfolio {
 
             double removed = oldValue - newValue;
             totalValue -= removed;
-
         }
+
+        appliedTransactionIds.add(tx.getId());
     }
+
 
 
     @Override
