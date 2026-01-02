@@ -1,59 +1,75 @@
-# Transaction Risk Portfolio Engine ⚡️
+Transaction Risk Portfolio Engine
+A Java-based portfolio engine focused on correctness, state management, and risk modelling for financial transactions.
+This project simulates how real-world portfolio systems apply transactions, enforce invariants, and compute risk under changing market conditions.
+The primary goal is to demonstrate engineering decision-making around immutability, idempotency, and extensible system design — not just feature output.
+Why this project exists
+Financial systems are not just about calculations — they are about correct state transitions.
+This project explores:
+How to safely apply buy/sell transactions to a portfolio
+How to prevent invalid or duplicate transaction execution
+How to maintain portfolio correctness while optimising performance
+How to design systems that remain extensible as complexity grows
+Core Concepts Demonstrated
+Invariant Enforcement
+Portfolio state is protected across all buy/sell operations to prevent invalid transitions.
+Transaction Identity & Immutability
+Transactions are immutable and uniquely identified, separating transaction definition from application logic to prevent double execution.
+Idempotent Application
+The portfolio enforces that a transaction can only be applied once, even if attempted multiple times.
+Efficient State Aggregation
+Portfolio value is cached and updated incrementally, reducing total valuation from repeated recomputation to O(1).
+Extensible Risk Modelling
+Risk calculations are abstracted to support future asset types and volatility models without rewriting core logic.
+High-Level Architecture
+Transaction
+Immutable representation of a financial action (buy/sell), containing identity and value.
+Asset
+Represents holdings and valuation logic for individual assets.
+Portfolio
+Owns all mutable state and is solely responsible for applying transactions and enforcing invariants.
+RiskCalculator
+Encapsulates portfolio-level risk computation with clean separation from core state logic.
+This separation ensures clear ownership of responsibility, a key principle in maintainable backend systems.
+Example Usage
+Portfolio portfolio = new Portfolio();
 
-**A high-performance Java engine that predicts and prioritizes transaction risks in financial portfolios. Designed for real-world fintech simulations, it demonstrates clean architecture, efficient data processing, and actionable risk insights.**
+Transaction buy = new Transaction(Transaction.Type.BUY, "AAPL", 1000);
+Transaction sell = new Transaction(Transaction.Type.SELL, "AAPL", 500);
 
----
+portfolio.applyTransaction(buy);
+portfolio.applyTransaction(sell);
 
-## 🚀 Features
-- ✅ Real-time transaction risk scoring  
-- ✅ Portfolio-level risk aggregation  
-- ✅ Handles large datasets efficiently  
-- ✅ Modular, maintainable design  
-- ✅ Configurable risk thresholds  
-
----
-
-## 🎯 Tech Stack
-- **Java 8** – core language  
-- **Maven/Gradle** – build & dependency management  
-- **JUnit** – testing  
-- **CSV/JSON** – transaction data handling  
-- Optional: SQL/NoSQL for portfolio storage  
-
----
-
-## 💡 Project Highlights
-- **Transaction Processor:** Validates and parses incoming transactions  
-- **Risk Analyzer:** Calculates risk scores with configurable rules  
-- **Portfolio Engine:** Aggregates risks to generate actionable insights  
-- **Report Generator:** Outputs summaries & alerts for decision-making  
-
----
-
-## 🖥 Demo / Example
-```java
-TransactionEngine engine = new TransactionEngine();
-engine.loadData("data/sample_transactions.csv");
-engine.calculateRiskScores();
-engine.generatePortfolioReport();
-Example Output:
-Top 10 high-risk transactions
-Portfolio-level risk summary & alerts
-Optional: Add a GIF or screenshot of the engine in action here to make it visually appealing.
-⚙️ Installation
-git clone https://github.com/<your-username>/transaction-risk-portfolio-engine.git
-cd transaction-risk-portfolio-engine
-mvn clean install
-java -jar target/transaction-risk-portfolio-engine.jar
-Load sample datasets from /data folder and customize configurations via config.properties.
-🔮 Future Improvements
-Machine learning-based risk prediction
-Real-time transaction streaming (Kafka / RabbitMQ)
-Web dashboard for visualization
-Advanced anomaly detection and portfolio optimization
-🤝 Contributing
-Contributions, bug reports, and suggestions are welcome!
-Fork the repo
-Create a branch (feature/YourFeature)
-Submit a pull request
+double totalValue = portfolio.getTotalValue();
+double portfolioRisk = portfolio.calculateRisk();
+The portfolio guarantees:
+Transactions are applied once
+State remains consistent after every operation
+Risk reflects the current portfolio state
+Technologies Used
+Java 8
+Object-Oriented Design
+Collections & State Management
+Basic risk simulation logic
+(No external frameworks — focus is on core language and design fundamentals.)
+Design Trade-offs & Decisions
+Why immutability for transactions?
+Prevents accidental mutation and makes transaction history reliable.
+Why enforce application logic in Portfolio?
+Centralises state mutation and avoids scattered business rules.
+Why cache total portfolio value?
+Improves performance while maintaining correctness through controlled updates.
+These decisions mirror patterns used in real-world backend and financial systems.
+Future Improvements
+More advanced risk models
+Historical transaction replay
+Persistent storage
+Concurrency-safe transaction application
+REST API interface
+What this project demonstrates
+This project is less about output and more about how systems should behave under constraints.
+It reflects how I think about:
+Backend correctness
+State ownership
+Defensive design
+Scalable abstractions
 
