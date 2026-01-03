@@ -34,6 +34,12 @@ public class Portfolio {
         return 0;
     }
     public void addAsset(Asset asset) {
+        if (asset == null) {
+            throw new IllegalArgumentException("Asset can not be null. Please enter a valid asset object");
+        }
+        if (assets.containsKey(asset.getName())){
+            throw new IllegalArgumentException("Asset already exists within the Portfolio. Unable to add duplicate.");
+        }
         assets.put(asset.getName(), asset);
         totalValue += asset.getValue();
     }
