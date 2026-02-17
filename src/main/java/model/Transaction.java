@@ -1,11 +1,10 @@
 package model;
+import java.util.UUID;
 
 public final class Transaction {
     public enum Type { BUY, SELL }
 
-    private static int counter = 0; 
-
-    private final int id;
+    private final UUID id;
     private final Type type;
     private final String assetname;
     private final double amount;
@@ -24,13 +23,10 @@ public final class Transaction {
         this.type = type;
         this.assetname = assetname;
         this.amount = amount;
-
-        synchronized (Transaction.class) { 
-            this.id = counter++;
-        }
+        this.id = UUID.randomUUID();
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 

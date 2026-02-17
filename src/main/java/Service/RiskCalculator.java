@@ -15,7 +15,7 @@ public class RiskCalculator {
         if (totalValue == 0) return 0;
 
         double weightedRisk = 0;
-        for (Asset asset : portfolio.getAssets()) {
+        for (Asset asset : portfolio.getAssetsView()) {
             weightedRisk += (asset.getValue() / totalValue) * asset.getRisk();
         }
         return weightedRisk;
@@ -23,7 +23,7 @@ public class RiskCalculator {
 
     // Simulate risk fluctuations
     public static void simulateMarketFluctuations(Portfolio portfolio) {
-        for (Asset asset : portfolio.getAssets()) {
+        for (Asset asset : portfolio.getAssetsView()) {
             double changeFactor = 0.9 + 0.2 * random.nextDouble(); // +/-10%
             asset.setValue(asset.getValue() * changeFactor);
         }

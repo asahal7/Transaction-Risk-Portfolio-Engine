@@ -1,18 +1,20 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public class Portfolio {
 
     private final Map<String, Asset> assets;
     private double totalValue;
-    private final Set<Integer> appliedTransactionIds;
+    private final Set<UUID> appliedTransactionIds;
     private final List<AuditEntry> auditLog = new ArrayList<>();
 
     public Portfolio(Map<String, Asset> assets) {
@@ -25,6 +27,11 @@ public class Portfolio {
                 this.totalValue += asset.getValue();
             }
         }
+    }
+
+    // ✅ Put this INSIDE the class
+    public Collection<Asset> getAssetsView() {
+        return Collections.unmodifiableCollection(assets.values());
     }
 
     public boolean hasAsset(String name) {
@@ -88,22 +95,27 @@ public class Portfolio {
         }
 
         if (appliedTransactionIds.contains(tx.getId())) {
-            reasons.add(new RejectionReason(RejectionReason.Code.DUPLICATE_TRANSACTION, "Transaction already applied: " + tx.getId()));
+            reasons.add(new RejectionReason(RejectionReason.Code.DUPLICATE_TRANSACTION,
+                    "Transaction already applied: " + tx.getId()));
             return ValidationResult.rejected(reasons);
         }
 
         if (tx.getAmount() <= 0) {
-            reasons.add(new RejectionReason(RejectionReason.Code.NEGATIVE_OR_ZERO_AMOUNT, "Amount must be greater than zero. Got: " + tx.getAmount()));
+            reasons.add(new RejectionReason(RejectionReason.Code.NEGATIVE_OR_ZERO_AMOUNT,
+                    "Amount must be greater than zero. Got: " + tx.getAmount()));
         }
 
         Asset asset = assets.get(tx.getAssetName());
         if (asset == null) {
-            reasons.add(new RejectionReason(RejectionReason.Code.UNKNOWN_ASSET, "Asset does not exist: " + tx.getAssetName()));
+            reasons.add(new RejectionReason(RejectionReason.Code.UNKNOWN_ASSET,
+                    "Asset does not exist: " + tx.getAssetName()));
             return ValidationResult.rejected(reasons);
         }
 
         if (tx.getType() == Transaction.Type.SELL && asset.getValue() < tx.getAmount()) {
-            reasons.add(new RejectionReason(RejectionReason.Code.INSUFFICIENT_ASSET_VALUE, "Cannot sell " + tx.getAmount() + " from " + tx.getAssetName() + " (only " + asset.getValue() + " available)."));
+            reasons.add(new RejectionReason(RejectionReason.Code.INSUFFICIENT_ASSET_VALUE,
+                    "Cannot sell " + tx.getAmount() + " from " + tx.getAssetName()
+                            + " (only " + asset.getValue() + " available)."));
         }
 
         return reasons.isEmpty() ? ValidationResult.ok() : ValidationResult.rejected(reasons);

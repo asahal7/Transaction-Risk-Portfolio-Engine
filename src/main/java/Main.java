@@ -2,6 +2,7 @@ import model.Asset;
 import model.Portfolio;
 import model.Transaction;
 import service.RiskCalculator;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +12,7 @@ public class Main {
         Asset crypto = new Asset("Crypto C", 2000, 0.8);
 
         // Create portfolio
-        Portfolio portfolio = new Portfolio();
+        Portfolio portfolio = new Portfolio(new HashMap<>());
         portfolio.addAsset(stock);
         portfolio.addAsset(bond);
         portfolio.addAsset(crypto);
@@ -21,8 +22,8 @@ public class Main {
         System.out.println("Initial Risk: " + RiskCalculator.calculatePortfolioRisk(portfolio));
 
         // Apply transactions
-        Transaction buyStock = new Transaction(Transaction.Type.BUY, stock, 2000);
-        Transaction sellBond = new Transaction(Transaction.Type.SELL, bond, 1000);
+        Transaction buyStock = new Transaction(Transaction.Type.BUY, stock.getName(), 2000);
+        Transaction sellBond = new Transaction(Transaction.Type.SELL, bond.getName(), 1000);
         portfolio.applyTransaction(buyStock);
         portfolio.applyTransaction(sellBond);
 
