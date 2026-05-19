@@ -47,7 +47,10 @@ This project explores:
   Immutable representation of a financial action (BUY / SELL), containing identity, target asset, and amount.
 
 - **Asset**  
-  Represents individual holdings and encapsulates asset-level value state.
+  Represents an individual holding with a value and a risk factor (0–1 scale).
+
+- **RiskCalculator**  
+  Computes weighted portfolio risk across all assets (each asset's value as a proportion of total portfolio value, multiplied by its risk factor). Also simulates market fluctuations by applying random ±10% changes to asset values.
 
 - **Portfolio**  
   Owns all mutable state and is solely responsible for:
@@ -69,13 +72,14 @@ This separation ensures **clear ownership of responsibility**, a key principle i
 ```java
 Portfolio portfolio = new Portfolio(assets);
 
-Transaction buy = new Transaction(1, Transaction.Type.BUY, "AAPL", 1000);
-Transaction sell = new Transaction(2, Transaction.Type.SELL, "AAPL", 500);
+Transaction buy  = new Transaction(Transaction.Type.BUY,  "AAPL", 1000);
+Transaction sell = new Transaction(Transaction.Type.SELL, "AAPL", 500);
 
 portfolio.applyTransaction(buy);
 portfolio.applyTransaction(sell);
 
-double totalValue = portfolio.getTotalValue();
+double totalValue = portfolio.getTotalValue(); // O(1)
+double risk = RiskCalculator.calculatePortfolioRisk(portfolio);
 ``` 
 
 ---
